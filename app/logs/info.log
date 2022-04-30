@@ -242,3 +242,11 @@ INFO in __init__: this is the plain message
 INFO in __init__: this is the plain message
 [2022-04-28 16:35:16,825] 172.20.0.1 requested http://localhost/welcome
 INFO in __init__: this is the plain message
+[2022-04-28 17:18:11,566] 172.20.0.1 requested http://localhost/
+INFO in __init__: this is the plain message
+[2022-04-28 17:50:41,340] 172.20.0.1 requested http://localhost/
+INFO in __init__: this is the plain message
+[2022-04-29 01:35:41,204] 172.20.0.1 requested http://localhost/
+INFO in __init__: this is the plain message
+[2022-04-29 01:35:43,458] 172.20.0.1 requested http://localhost/register
+INFO in __init__: this is the plain message

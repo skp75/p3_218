@@ -1,16 +1,19 @@
+import logging
+import os.path
+import pandas as pd
+from io import StringIO
+import csv
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.auth.decorators import admin_required
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
-from app.auth.forms import login_form, register_form, profile_form, security_form, user_edit_form
+from werkzeug.utils import secure_filename
+from app.auth.forms import login_form, register_form, profile_form, security_form, user_edit_form, csv_form
 from app.db import db
 from app.db.models import User
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 from flask import current_app
-
-
-
 
 @auth.route('/login', methods=['POST', 'GET'])
 def login():
@@ -30,6 +33,9 @@ def login():
             flash("Welcome", 'success')
             return redirect(url_for('auth.dashboard'))
     return render_template('login.html', form=form)
+
+
+
 
 
 @auth.route('/register', methods=['POST', 'GET'])
@@ -55,11 +61,41 @@ def register():
     return render_template('register.html', form=form)
 
 
-@auth.route('/dashboard')
+@auth.route('/dashboard', methods=['GET','POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    log = logging.getLogger("myApp")
+    form = csv_form()
+    if form.validate_on_submit():
+        file = form.file
+        raw_data = pd.read_csv(file.data)
+        raw_data = drop_bad_data(raw_data)
+        flash(raw_data)
 
+    return render_template('dashboard.html', form=form)
+
+'''Removes un-needed data from table'''
+def drop_bad_data(raw_data):
+    raw_data.drop('Spotify ID', inplace=True, axis=1)
+    raw_data.drop('Artist IDs', inplace=True, axis=1)
+    raw_data.drop('Album Name', inplace=True, axis=1)
+    raw_data.drop('Duration (ms)', inplace=True, axis=1)
+    raw_data.drop('Popularity', inplace=True, axis=1)
+    raw_data.drop('Added By', inplace=True, axis=1)
+    raw_data.drop('Added At', inplace=True, axis=1)
+    raw_data.drop('Danceability', inplace=True, axis=1)
+    raw_data.drop('Energy', inplace=True, axis=1)
+    raw_data.drop('Key', inplace=True, axis=1)
+    raw_data.drop('Loudness', inplace=True, axis=1)
+    raw_data.drop('Mode', inplace=True, axis=1)
+    raw_data.drop('Speechiness', inplace=True, axis=1)
+    raw_data.drop('Acousticness', inplace=True, axis=1)
+    raw_data.drop('Instrumentalness', inplace=True, axis=1)
+    raw_data.drop('Liveness', inplace=True, axis=1)
+    raw_data.drop('Valence', inplace=True, axis=1)
+    raw_data.drop('Tempo', inplace=True, axis=1)
+    raw_data.drop('Time Signature', inplace=True, axis=1)
+    return raw_data
 
 @auth.route("/logout")
 @login_required
@@ -168,5 +204,3 @@ def edit_account():
         flash('You Successfully Updated your Password or Email', 'success')
         return redirect(url_for('auth.dashboard'))
     return render_template('manage_account.html', form=form)
-
-

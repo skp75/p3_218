@@ -1,6 +1,6 @@
 import logging
 import os.path
-import pandas as pd
+
 from io import StringIO
 import csv
 from flask import Blueprint, render_template, request, redirect, url_for, flash

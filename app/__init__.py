@@ -131,12 +131,11 @@ def create_app():
             parts.append(part)
         line = " ".join(parts)
         #this triggers a log entry to be created with whatever is in the line variable
-        app.logger.info('this is the plain message')
+        app.logger.info(line)
 
         return response
 
     return app
-
 
 @login_manager.user_loader
 def user_loader(user_id):
